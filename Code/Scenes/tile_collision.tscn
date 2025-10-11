@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://bspguw5qngl8l"]
+
+[ext_resource type="Script" uid="uid://p6odama8ai0x" path="res://Code/Scripts/tile_collision.gd" id="1_sdwbt"]
+
+[sub_resource type="Gradient" id="Gradient_sdwbt"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.342274, 0.452827, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_85sv1"]
+gradient = SubResource("Gradient_sdwbt")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sdwbt"]
+size = Vector2(256, 1)
+
+[node name="TileCollision" type="Sprite2D"]
+scale = Vector2(0.125, 8)
+texture = SubResource("GradientTexture1D_85sv1")
+script = ExtResource("1_sdwbt")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_sdwbt")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]

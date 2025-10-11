@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmheojmwjnxym"]
+
+[ext_resource type="Script" uid="uid://dy1yuj4k1rxa8" path="res://Code/Scripts/music_button.gd" id="2_xgnfb"]
+
+[node name="MusicButton" type="Node2D"]
+position = Vector2(38, 6)
+script = ExtResource("2_xgnfb")
+
+[node name="CheckButton" type="CheckButton" parent="."]
+offset_left = -22.0
+offset_top = -11.0
+offset_right = 22.0
+offset_bottom = 13.0
+
+[node name="Label" type="Label" parent="."]
+offset_left = -27.0
+offset_top = 13.0
+offset_right = 26.0
+offset_bottom = 36.0
+
+[node name="Sound" type="AudioStreamPlayer" parent="."]
+
+[connection signal="toggled" from="CheckButton" to="." method="_on_check_button_toggled"]

@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://bpfmyw70uyw1t"]
+
+[ext_resource type="Script" uid="uid://dg05lr0b0tc5b" path="res://Code/Scripts/music_tile.gd" id="1_58r7e"]
+
+[sub_resource type="Gradient" id="Gradient_58r7e"]
+offsets = PackedFloat32Array(-0.35, 0.753)
+colors = PackedColorArray(0.341176, 0.45098, 1, 1, 1, 0, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_63wps"]
+gradient = SubResource("Gradient_58r7e")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vimak"]
+size = Vector2(256, 1)
+
+[node name="MusicTile" type="Sprite2D"]
+scale = Vector2(0.273438, 16)
+texture = SubResource("GradientTexture1D_63wps")
+script = ExtResource("1_58r7e")
+
+[node name="Sound" type="AudioStreamPlayer" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+visible = false
+shape = SubResource("RectangleShape2D_vimak")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 32.0
+one_shot = true
+
+[node name="LoseTimer" type="Timer" parent="."]
+wait_time = 32.0
+one_shot = true
+
+[node name="NewSongTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="LoseTimer" to="." method="_on_lose_timer_timeout"]
+[connection signal="timeout" from="NewSongTimer" to="." method="_on_new_song_timer_timeout"]

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bf1057uposfpb"]
+
+[ext_resource type="Script" uid="uid://cykwwanb8sjnb" path="res://Code/Scripts/bomb_tile.gd" id="1_f7opk"]
+[ext_resource type="Texture2D" uid="uid://csp0at1k15rfx" path="res://Assets/Images/bomb.png" id="1_tnd7q"]
+
+[node name="BombTile" type="Node2D"]
+script = ExtResource("1_f7opk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_tnd7q")

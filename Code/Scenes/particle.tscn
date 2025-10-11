@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmoetnow0tott"]
+
+[sub_resource type="Curve" id="Curve_qa6nv"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.221591, 0.921348), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="Particle" type="CPUParticles2D"]
+position = Vector2(185, 352)
+amount = 267
+lifetime = 1.1
+emission_shape = 3
+emission_rect_extents = Vector2(360, 800)
+direction = Vector2(4.795, 22.8)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 21.05
+initial_velocity_max = 25.96
+damping_max = 24.242
+angle_max = 360.5
+scale_amount_min = 5.05
+scale_amount_max = 8.45
+scale_amount_curve = SubResource("Curve_qa6nv")

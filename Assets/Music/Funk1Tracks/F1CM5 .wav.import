@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://tuvn32dejp5j"
+path="res://.godot/imported/F1CM5 .wav-374acd9b5e732127789d006eee6c42c8.sample"
+
+[deps]
+
+source_file="res://Music/Funk1Tracks/F1CM5 .wav"
+dest_files=["res://.godot/imported/F1CM5 .wav-374acd9b5e732127789d006eee6c42c8.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=2
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

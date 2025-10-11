@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dupila3qgufdi"]
+
+[ext_resource type="Texture2D" uid="uid://boqqj6shxsbnr" path="res://Assets/Images/line.png" id="1_0u2od"]
+[ext_resource type="Script" uid="uid://baa8v6ynpxkro" path="res://Code/Scripts/line_tile.gd" id="1_x62w6"]
+
+[node name="LineTile" type="Node2D"]
+script = ExtResource("1_x62w6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_0u2od")

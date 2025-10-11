@@ -1,0 +1,122 @@
+[gd_scene load_steps=24 format=3 uid="uid://dlsfwtutnokqo"]
+
+[ext_resource type="PackedScene" uid="uid://cmheojmwjnxym" path="res://Code/Scenes/music_button.tscn" id="1_2nij2"]
+[ext_resource type="Script" uid="uid://chge7ifh2f85o" path="res://Code/Scripts/test_scene.gd" id="1_6m80x"]
+[ext_resource type="AudioStream" uid="uid://cx80wdsqbgaak" path="res://Assets/Music/Funk1Tracks/F1B1.wav" id="2_7cbxl"]
+[ext_resource type="AudioStream" uid="uid://d1xgl02xd0mat" path="res://Assets/Music/Funk1Tracks/F1B2.wav" id="3_8pr8v"]
+[ext_resource type="AudioStream" uid="uid://b516jny3q5kob" path="res://Assets/Music/Funk1Tracks/F1B3.wav" id="4_buypi"]
+[ext_resource type="AudioStream" uid="uid://1arbkuqr8u5m" path="res://Assets/Music/Funk1Tracks/F1B4.wav" id="5_njel3"]
+[ext_resource type="AudioStream" uid="uid://rmmbjws73xl4" path="res://Assets/Music/Funk1Tracks/F1C1.wav" id="6_6h1ut"]
+[ext_resource type="AudioStream" uid="uid://btlf7djsutpig" path="res://Assets/Music/Funk1Tracks/F1C2.wav" id="7_6m80x"]
+[ext_resource type="AudioStream" uid="uid://cag1o73h3usk1" path="res://Assets/Music/Funk1Tracks/F1C3.wav" id="8_cqn77"]
+[ext_resource type="AudioStream" uid="uid://dyg1qtdromo5v" path="res://Assets/Music/Funk1Tracks/F1C4.wav" id="9_22oil"]
+[ext_resource type="AudioStream" uid="uid://yi6l7t8cdchu" path="res://Assets/Music/Funk1Tracks/F1HH1.wav" id="10_p7tmn"]
+[ext_resource type="AudioStream" uid="uid://ce4u5qe4xt5qs" path="res://Assets/Music/Funk1Tracks/F1HH2.wav" id="11_b11sm"]
+[ext_resource type="AudioStream" uid="uid://damdlxhthcgdl" path="res://Assets/Music/Funk1Tracks/F1HH3.wav" id="12_mfkbt"]
+[ext_resource type="AudioStream" uid="uid://b4r7pwx6quvi7" path="res://Assets/Music/Funk1Tracks/F1HH4.wav" id="13_077gh"]
+[ext_resource type="AudioStream" uid="uid://b2snuayr052ud" path="res://Assets/Music/Funk1Tracks/F1KS1.wav" id="14_5qgi0"]
+[ext_resource type="AudioStream" uid="uid://cv1mcyblun1aa" path="res://Assets/Music/Funk1Tracks/F1KS2.wav" id="15_7kp7o"]
+[ext_resource type="AudioStream" uid="uid://c4xaum88dp0ca" path="res://Assets/Music/Funk1Tracks/F1KS3.wav" id="16_8fq6b"]
+[ext_resource type="AudioStream" uid="uid://bs18dvqog7eqi" path="res://Assets/Music/Funk1Tracks/F1KS4.wav" id="17_oy8sc"]
+[ext_resource type="AudioStream" uid="uid://cxsx12bfjbcg3" path="res://Assets/Music/Funk1Tracks/F1M1.wav" id="18_2nf64"]
+[ext_resource type="AudioStream" uid="uid://cnuxycox415m5" path="res://Assets/Music/Funk1Tracks/F1M2.wav" id="19_sxsde"]
+[ext_resource type="AudioStream" uid="uid://da1re3tgirh0m" path="res://Assets/Music/Funk1Tracks/F1M3.wav" id="20_r5xgu"]
+[ext_resource type="AudioStream" uid="uid://drtxv0gsut1ol" path="res://Assets/Music/Funk1Tracks/F1M4.wav" id="21_rygqd"]
+[ext_resource type="AudioStream" uid="uid://oj6l3hveoysh" path="res://Assets/Music/Funk1Tracks/F1M5.wav" id="22_8k62k"]
+
+[node name="TestScene" type="Node2D"]
+script = ExtResource("1_6m80x")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="Buttons" type="Node" parent="."]
+
+[node name="MusicButton" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(29, 20)
+sound = ExtResource("2_7cbxl")
+
+[node name="MusicButton2" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(102, 20)
+sound = ExtResource("3_8pr8v")
+
+[node name="MusicButton3" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(183, 22)
+sound = ExtResource("4_buypi")
+
+[node name="MusicButton4" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(256, 22)
+sound = ExtResource("5_njel3")
+
+[node name="MusicButton6" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(28, 69)
+sound = ExtResource("6_6h1ut")
+
+[node name="MusicButton7" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(96, 69)
+sound = ExtResource("7_6m80x")
+
+[node name="MusicButton8" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(175, 65)
+sound = ExtResource("8_cqn77")
+
+[node name="MusicButton9" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(256, 66)
+sound = ExtResource("9_22oil")
+
+[node name="MusicButton10" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(30, 115)
+sound = ExtResource("10_p7tmn")
+volume = 3.0
+
+[node name="MusicButton5" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(96, 118)
+sound = ExtResource("11_b11sm")
+
+[node name="MusicButton11" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(173, 113)
+sound = ExtResource("12_mfkbt")
+
+[node name="MusicButton12" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(256, 116)
+sound = ExtResource("13_077gh")
+
+[node name="MusicButton13" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(29, 168)
+sound = ExtResource("14_5qgi0")
+
+[node name="MusicButton14" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(93, 160)
+sound = ExtResource("15_7kp7o")
+
+[node name="MusicButton15" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(175, 163)
+sound = ExtResource("16_8fq6b")
+
+[node name="MusicButton16" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(258, 167)
+sound = ExtResource("17_oy8sc")
+
+[node name="MusicButton17" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(27, 217)
+sound = ExtResource("18_2nf64")
+
+[node name="MusicButton18" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(91, 215)
+sound = ExtResource("19_sxsde")
+
+[node name="MusicButton19" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(172, 216)
+sound = ExtResource("20_r5xgu")
+volume = 4.005
+
+[node name="MusicButton20" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(252, 216)
+sound = ExtResource("21_rygqd")
+
+[node name="MusicButton21" parent="Buttons" instance=ExtResource("1_2nij2")]
+position = Vector2(326, 215)
+sound = ExtResource("22_8k62k")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

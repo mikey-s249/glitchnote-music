@@ -1,9 +1,33 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://cxeo3tlu67esw"]
+[gd_resource type="TileSet" load_steps=12 format=3 uid="uid://cxeo3tlu67esw"]
 
-[ext_resource type="Texture2D" uid="uid://vmax8c4n1fwb" path="res://combined_tiles.png" id="1_vwjol"]
+[ext_resource type="Texture2D" uid="uid://bre43yfmbpgy0" path="res://Assets/Images/tile_outlines.png" id="1_qv5xb"]
+[ext_resource type="Texture2D" uid="uid://brwe5ghuu8038" path="res://Assets/Images/combined_tiles2.png" id="2_bct7d"]
+[ext_resource type="Texture2D" uid="uid://c3ujtamb3uhfv" path="res://Assets/Images/New Block Textures.png" id="3_cglae"]
+[ext_resource type="PackedScene" uid="uid://bpfmyw70uyw1t" path="res://Code/Scenes/music_tile.tscn" id="4_bct7d"]
+[ext_resource type="PackedScene" uid="uid://bf1057uposfpb" path="res://Code/Scenes/bomb_tile.tscn" id="4_cglae"]
+[ext_resource type="PackedScene" uid="uid://dupila3qgufdi" path="res://Code/Scenes/line_tile.tscn" id="5_j1ibs"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qv5xb"]
+texture = ExtResource("1_qv5xb")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r2f4w"]
-texture = ExtResource("1_vwjol")
+texture = ExtResource("2_bct7d")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 1:0/0 = 0
@@ -62,6 +86,57 @@ texture_region_size = Vector2i(32, 32)
 26:1/0 = 0
 27:1/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j1ibs"]
+texture = ExtResource("3_cglae")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
+15:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+12:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+16:0/0 = 0
+16:1/0 = 0
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_cglae"]
+resource_name = "Special Tiles"
+scenes/1/scene = ExtResource("4_cglae")
+scenes/2/scene = ExtResource("5_j1ibs")
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_j1ibs"]
+resource_name = "Test"
+scenes/1/scene = ExtResource("4_bct7d")
+
 [resource]
 tile_size = Vector2i(32, 32)
 sources/1 = SubResource("TileSetAtlasSource_r2f4w")
+sources/0 = SubResource("TileSetAtlasSource_qv5xb")
+sources/2 = SubResource("TileSetAtlasSource_j1ibs")
+sources/3 = SubResource("TileSetScenesCollectionSource_cglae")
+sources/4 = SubResource("TileSetScenesCollectionSource_j1ibs")
