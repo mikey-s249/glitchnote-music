@@ -311,19 +311,9 @@ func let_go():
 	draw_pieces()
 	clear_area(Vector2i(0,0), 4, 4, $Move)
 
-
-func _on_area_1_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if event.is_action_pressed("left_click"):
-		move_piece(pieces[0], 0)
-
-func _on_area_2_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if event.is_action_pressed("left_click"):
-		move_piece(pieces[1], 1)
-
-func _on_area_3_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if event.is_action_pressed("left_click"):
-		move_piece(pieces[2], 2)
-
+func _on_block_selected(block_id: int) -> void:
+	move_piece(pieces[block_id], block_id)
+	
 
 func clear_slot(slot):
 	match slot:
