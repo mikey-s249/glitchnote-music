@@ -64,6 +64,7 @@ tile_set = ExtResource("2_h2yge")
 script = ExtResource("3_lnakw")
 
 [node name="Ghost" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
 position = Vector2(0, 32)
 scale = Vector2(0.938, 0.938)
 tile_set = ExtResource("2_h2yge")
@@ -272,6 +273,7 @@ theme = ExtResource("8_ibtm5")
 theme_override_font_sizes/font_size = 13
 
 [node name="Move" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
 z_index = 1
 texture_filter = 1
 use_parent_material = true
@@ -305,8 +307,8 @@ wait_time = 32.0
 one_shot = true
 autostart = true
 
+[connection signal="beat_dragging" from="." to="Selection" method="_on_beat_dragging"]
 [connection signal="block_selected" from="Selection" to="." method="_on_block_selected"]
-[connection signal="draw_piece_offset" from="Selection" to="." method="draw_piece_offset"]
 [connection signal="block_selected" from="Selection/BlockSelection1" to="Selection" method="_on_block_selection"]
 [connection signal="block_selected" from="Selection/BlockSelection2" to="Selection" method="_on_block_selection"]
 [connection signal="block_selected" from="Selection/BlockSelection3" to="Selection" method="_on_block_selection"]

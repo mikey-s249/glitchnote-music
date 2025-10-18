@@ -2,17 +2,15 @@ extends Node2D
 
 var time_count = 0
 
-# Stores the id for the tileset
-var tile_id: int = 2
-
-# Stores the id for the tileset with the special tiles
-var special_id: int = 3
-
+# This signal emits every end of the beat
+#	but includes which slot is currently being dragged
+signal beat_dragging(draggin_slot : int)
 
 const WIDTH = PieceVerifier.WIDTH
 const HEIGHT = PieceVerifier.HEIGHT
 const TOP_LEFT : Vector2i = PieceVerifier.TOP_LEFT
 const GRID_POS : Vector2i = PieceVerifier.GRID_POS
+const TILE_ID : int = TileDrawer.TILE_ID
 
 # Stores the initial size of an individual tile before scaling has taken place
 var tile_size = 32
@@ -29,6 +27,7 @@ var dragging_piece_offset
 
 var score = 0
 
+
 # Need to fix:
 # 	Able to place tiles outside of play area --
 # 	When a new piece is the same as a another one you currently hold, the other one gets rotated to match the rotation --
@@ -37,7 +36,12 @@ var score = 0
 var particle_scene = preload("res://Code/Scenes/burst_particle.tscn")
 var tile_ray_scene = preload("res://Code/Scenes/tile_ray.tscn")
 var explode_particle_scene = preload("res://Code/Scenes/explode_effect.tscn")
+
 @onready var selection_controller = %Selection as SelectionController
+@onready var selection_layer : TileMapLayer = %Selection
+@onready var placed_layer : TileMapLayer = %Placed
+@onready var ghost_layer : TileMapLayer = %Ghost
+@onready var move_layer : TileMapLayer = %Move
 
 
 # Keeps track of whether a piece is being dragged currently or not
@@ -51,46 +55,6 @@ var dragging_slot
 # Initial position of Move layer
 var default_position
 
-
-
-
-# Draws a piece specified by a chain code
-func draw_piece(piece: Piece, pos: Vector2i, colour: Vector2i, layer: TileMapLayer, tile_source_id=tile_id):
-	
-	layer.set_cell(pos, tile_source_id, colour)
-	var chain = PieceVerifier.get_chain(piece)
-	
-	for offset in chain:
-		pos += offset
-		layer.set_cell(pos, tile_source_id, colour)
-
-# Draws a piece that uses special tiles
-func draw_special_piece(piece: Piece, pos: Vector2i, special: Piece.SpecialTiles, layer: TileMapLayer):
-	layer.set_cell(pos, special_id, Vector2i.ZERO, piece.special)
-	var chain = PieceVerifier.get_chain(piece)
-	
-	for offset in chain:
-		pos += offset
-		layer.set_cell(pos, special_id, Vector2i.ZERO, piece.special)
-
-# Draws a piece using the offset
-func draw_piece_offset(piece: Piece, pos: Vector2i, colour: Vector2i, layer: TileMapLayer, tile_source_id=tile_id):
-	pos += PieceVerifier.find_piece_offset(piece.chain_code, pos)
-	
-	assert(layer != null)
-	if piece.special == Piece.SpecialTiles.NONE:
-		draw_piece(piece, pos, colour, layer, tile_source_id)
-	else:
-		draw_special_piece(piece, pos, piece.special, layer)
-
-
-# Clears a rectangular area
-func clear_area(pos: Vector2i, WIDTH, HEIGHT, layer: TileMapLayer):
-	var start_pos = pos
-	for i in range(WIDTH):
-		for j in range(HEIGHT):
-			pos = start_pos + Vector2i(i,j)
-			layer.erase_cell(pos)
 
 # Clears an area specified by a chain code
 #func clear_chain(pos: Vector2i, chain_code: Array[int], layer: TileMapLayer):
@@ -110,7 +74,7 @@ func check_lines():
 	for i in range(WIDTH):
 		passed = true
 		for j in range(HEIGHT):
-			passed = $Placed.get_cell_atlas_coords(TOP_LEFT + Vector2i(i,j)) != Vector2i(-1,-1)
+			passed = placed_layer.get_cell_atlas_coords(TOP_LEFT + Vector2i(i,j)) != Vector2i(-1,-1)
 			if ! passed:
 				break
 		if passed:
@@ -119,7 +83,7 @@ func check_lines():
 	for j in range(WIDTH):
 		passed = true
 		for i in range(HEIGHT):
-			passed = $Placed.get_cell_atlas_coords(TOP_LEFT + Vector2i(i,j)) != Vector2i(-1,-1)
+			passed = placed_layer.get_cell_atlas_coords(TOP_LEFT + Vector2i(i,j)) != Vector2i(-1,-1)
 			if ! passed:
 				break
 		if passed:
@@ -131,14 +95,14 @@ func check_lines():
 	for i in columns:
 		gen_ray(TileRay.Direction.VERTICAL, Vector2i(i, 0))
 		var particle = particle_scene.instantiate()
-		particle.global_position = $Placed.to_global($Placed.map_to_local(TOP_LEFT + Vector2i(i, WIDTH/2)))
+		particle.global_position = placed_layer.to_global(placed_layer.map_to_local(TOP_LEFT + Vector2i(i, WIDTH/2)))
 		if WIDTH % 2 == 0:
-			particle.global_position.y -= $Placed.scale.y * tile_size / 2 
+			particle.global_position.y -= placed_layer.scale.y * tile_size / 2 
 		add_sibling(particle)
 		particle.start()
 		$Camera.shakeTimed(0.2)
 		for j in HEIGHT:
-			$Placed.erase_cell(TOP_LEFT + Vector2i(i, j))
+			placed_layer.erase_cell(TOP_LEFT + Vector2i(i, j))
 			#if TOP_LEFT + Vector2i(i,j) in bomb_coords:
 				#bomb_coords.erase(TOP_LEFT + Vector2i(i,j))
 		
@@ -147,29 +111,28 @@ func check_lines():
 		
 		var particle: Node2D = particle_scene.instantiate()
 		
-		particle.global_position = $Placed.to_global($Placed.map_to_local(TOP_LEFT + Vector2i(HEIGHT/2, j)))
+		particle.global_position = placed_layer.to_global(placed_layer.map_to_local(TOP_LEFT + Vector2i(HEIGHT/2, j)))
 		if HEIGHT % 2 == 0:
-			particle.global_position.x -= $Placed.scale.x * tile_size / 2 
+			particle.global_position.x -= placed_layer.scale.x * tile_size / 2 
 		
 		particle.rotate_particles(90)
 		add_sibling(particle)
 		$Camera.shakeTimed(0.2)
 		particle.start()
 		for i in WIDTH:
-			$Placed.erase_cell(TOP_LEFT + Vector2i(i, j))
+			placed_layer.erase_cell(TOP_LEFT + Vector2i(i, j))
 			#if TOP_LEFT + Vector2i(i,j) in bomb_coords:
 				#bomb_coords.erase(TOP_LEFT + Vector2i(i,j))
 
 
 
 func _ready():
-	scaled_tile_size = $Placed.tile_set.tile_size.x * $Placed.scale.x
-	
+	scaled_tile_size = placed_layer.tile_set.tile_size.x * placed_layer.scale.x	
 	
 	#print(scaled_tile_size)
 	#create_board()
 
-	default_position = $Move.global_position
+	default_position = move_layer.global_position
 	for node in $MusicTiles.get_children():
 		node.connect("lose_game", game_lose)
 
@@ -180,30 +143,30 @@ func _process(delta: float):
 	var cell_coords
 
 	if dragging:
-		$Move.global_position = get_global_mouse_position()
-		$Ghost.clear()
+		move_layer.global_position = get_global_mouse_position()
+		ghost_layer.clear()
 
-		$Move.global_position.x -= dragging_piece_offset
-		cell_coords = $Ghost.local_to_map($Ghost.to_local($Move.global_position))
+		move_layer.global_position.x -= dragging_piece_offset
+		cell_coords = ghost_layer.local_to_map(ghost_layer.to_local(move_layer.global_position))
 		cell_coords.y -= 3
-		$Move.global_position -= ($Ghost.map_to_local(Vector2i(0,3)))
+		move_layer.global_position -= (ghost_layer.map_to_local(Vector2i(0,3)))
 
 		if 2 <= cell_coords.x and cell_coords.x <= 9 and 2 <= cell_coords.y and cell_coords.y <= 9: 
-			if PieceVerifier.check_chain_offset(cell_coords, dragging_piece.chain_code, $Placed):
-				draw_piece_offset(dragging_piece, cell_coords, dragging_piece.colour + Vector2i(0,1), $Ghost)
+			if PieceVerifier.check_chain_offset(cell_coords, dragging_piece.chain_code, placed_layer):
+				TileDrawer.draw_piece_offset(dragging_piece, cell_coords, dragging_piece.colour + Vector2i(0,1), ghost_layer)
 		
 		
 		if Input.is_action_just_released("left_click"):
-			if PieceVerifier.check_chain_offset(cell_coords, dragging_piece.chain_code, $Placed) and 2 <= cell_coords.x and cell_coords.x <= 9 and 2 <= cell_coords.y and cell_coords.y <= 9:
-				draw_piece_offset(dragging_piece, cell_coords, dragging_piece.colour, $Placed)
+			if PieceVerifier.check_chain_offset(cell_coords, dragging_piece.chain_code, placed_layer) and 2 <= cell_coords.x and cell_coords.x <= 9 and 2 <= cell_coords.y and cell_coords.y <= 9:
+				TileDrawer.draw_piece_offset(dragging_piece, cell_coords, dragging_piece.colour, placed_layer)
 				#if dragging_piece.can_explode:
 					#bomb_coords.append(cell_coords)
 				
 				selection_controller.refresh_selection_box(dragging_slot);
 				check_lines()
 			dragging = false
-			$Move.global_position = default_position
-			$Ghost.clear()
+			move_layer.global_position = default_position
+			ghost_layer.clear()
 			let_go()
 
 
@@ -212,20 +175,12 @@ func let_go():
 	dragging_piece = null
 	dragging_slot = null
 	selection_controller.draw_pieces();
-	clear_area(Vector2i(0,0), 4, 4, $Move)
+	TileDrawer.clear_area(Vector2i(0,0), 4, 4, move_layer)
 
 func _on_block_selected(piece : Piece, block_id: int) -> void:
 	move_piece(piece, block_id)
 	
 
-func clear_slot(slot):
-	match slot:
-		0:
-			clear_area(Vector2i(1,1), 4, 4, $Selection)
-		1:
-			clear_area(Vector2i(6,1), 4, 4, $Selection)
-		2:
-			clear_area(Vector2i(11,1), 4, 4, $Selection)
 
 
 func move_piece(piece, slot):
@@ -234,12 +189,12 @@ func move_piece(piece, slot):
 	dragging = true
 	dragging_piece_offset = ((dragging_piece.get_width() * 0.5) - 0.5) * scaled_tile_size
 	update_move_piece()
-	clear_slot(slot)
+	
 
 func update_move_piece():
 	if dragging_piece != null:
-		clear_area(Vector2i(0,0), 4, 4, $Move)
-		draw_piece_offset(dragging_piece, Vector2i(0,0), dragging_piece.colour, $Move)
+		TileDrawer.clear_area(Vector2i(0,0), 4, 4, move_layer)
+		TileDrawer.draw_piece_offset(dragging_piece, Vector2i(0,0), dragging_piece.colour, move_layer)
 		dragging_piece_offset = ((dragging_piece.get_width() * 0.5) - 0.5) * scaled_tile_size
 		
 	
@@ -250,29 +205,29 @@ func update_move_piece():
 # Scales board to fit in the 
 func create_board():
 	for i in range(WIDTH+2):
-		$Placed.set_cell(Vector2i(i,0) + GRID_POS, tile_id, grid_colour)
-		$Placed.set_cell(Vector2i(i,HEIGHT+1) + GRID_POS, tile_id, grid_colour)
+		placed_layer.set_cell(Vector2i(i,0) + GRID_POS, TILE_ID, grid_colour)
+		placed_layer.set_cell(Vector2i(i,HEIGHT+1) + GRID_POS, TILE_ID, grid_colour)
 	for i in range(HEIGHT+2):
-		$Placed.set_cell(Vector2i(0,i) + GRID_POS, tile_id, grid_colour)
-		$Placed.set_cell(Vector2i(WIDTH+1,i) + GRID_POS, tile_id, grid_colour)
-	var edge_coords = $Placed.to_global($Placed.map_to_local(Vector2i(WIDTH+2,0) + GRID_POS)).x - tile_size / 2
+		placed_layer.set_cell(Vector2i(0,i) + GRID_POS, TILE_ID, grid_colour)
+		placed_layer.set_cell(Vector2i(WIDTH+1,i) + GRID_POS, TILE_ID, grid_colour)
+	var edge_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(WIDTH+2,0) + GRID_POS)).x - tile_size / 2
 	var screen_edge = get_viewport().content_scale_size.x
 	var scale = screen_edge / edge_coords
-	$Placed.scale = Vector2(scale, scale)
-	$Move.scale = Vector2(scale, scale)
-	$Ghost.scale = Vector2(scale, scale)
+	placed_layer.scale = Vector2(scale, scale)
+	move_layer.scale = Vector2(scale, scale)
+	ghost_layer.scale = Vector2(scale, scale)
 	
-	var bottom_placed_coords = $Placed.to_global($Placed.map_to_local(Vector2i(0, HEIGHT + 2) + GRID_POS)).y - (tile_size / 2) - 3
-	#var top_selection_coords = $Selection.to_global($Selection.map_to_local(Vector2i()))
+	var bottom_placed_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(0, HEIGHT + 2) + GRID_POS)).y - (tile_size / 2) - 3
+	#var top_selection_coords = selection_layer.to_global(selection_layer.map_to_local(Vector2i()))
 	#print(bottom_placed_coords)
-	$Selection.global_position.y = bottom_placed_coords
+	selection_layer.global_position.y = bottom_placed_coords
 	
-	#print($Placed.to_global($Placed.map_to_local(Vector2i(WIDTH+2,1))).x)
+	#print(placed_layer.to_global(placed_layer.map_to_local(Vector2i(WIDTH+2,1))).x)
 	print(scale)
 
 
 func gen_ray(direction: TileRay.Direction, coords: Vector2i) -> void:
-	var pos = $Placed.to_global($Placed.map_to_local(coords + TOP_LEFT))
+	var pos = placed_layer.to_global(placed_layer.map_to_local(coords + TOP_LEFT))
 	var ray = tile_ray_scene.instantiate()
 	ray.set_direction(direction)
 	#print(pos)
@@ -290,68 +245,45 @@ func _on_music_clock_timeout() -> void:
 		if node is Tiles:
 			node.clock_timeout()
 		
-	for node: Special in $Placed.get_children():
+	for node: Special in placed_layer.get_children():
 		node.timeout()
 	#for coord in bomb_coords:
 		#var particle = explode_particle_scene.instantiate()
-		#particle.global_position = $Placed.to_global($Placed.map_to_local(coord))
+		#particle.global_position = placed_layer.to_global(placed_layer.map_to_local(coord))
 		#add_sibling(particle)
 		#particle.restart()
 		#$Camera.shakeTimed(0.2)
 		#for i in range(coord.x-1, coord.x+2):
 			#for j in range(coord.y-1, coord.y+2):
 				#if 2 <= i and i <= 9 and 2 <= j and j <= 9:
-					#$Placed.erase_cell(Vector2i(i,j))
+					#placed_layer.erase_cell(Vector2i(i,j))
 	#bomb_coords.clear()
 
 
 
 func bomb_expl(coords: Vector2i):
 	var particle = explode_particle_scene.instantiate()
-	particle.global_position = $Placed.to_global($Placed.map_to_local(coords))
+	particle.global_position = placed_layer.to_global(placed_layer.map_to_local(coords))
 	add_sibling(particle)
 	particle.restart()
 	$Camera.shakeTimed(0.2)
 	for i in range(coords.x-1, coords.x+2):
 		for j in range(coords.y-1, coords.y+2):
 			if TOP_LEFT.x <= i and i <= TOP_LEFT.x + WIDTH - 1 and TOP_LEFT.y <= j and j <= TOP_LEFT.y + HEIGHT - 1:
-				$Placed.erase_cell(Vector2i(i,j))
+				placed_layer.erase_cell(Vector2i(i,j))
 
 func line_expl(coords: Vector2i, vertical: bool):
 	if vertical:
 		for i in range(TOP_LEFT.y, TOP_LEFT.y + HEIGHT):
-			$Placed.erase_cell(Vector2i(coords.x, i))
+			placed_layer.erase_cell(Vector2i(coords.x, i))
 	else:
 		for i in range(TOP_LEFT.x, TOP_LEFT.x + WIDTH):
-			$Placed.erase_cell(Vector2i(i, coords.y))
+			placed_layer.erase_cell(Vector2i(i, coords.y))
 
-	
 
-		
-		
 func _on_beat_timer_timeout() -> void:
-	
-	
-	if dragging_slot == 0:
-		clear_slot(1)
-		clear_slot(2)
-	elif dragging_slot == 1:
-		clear_slot(0)
-		clear_slot(2)
-	elif dragging_slot == 2:
-		clear_slot(0)
-		clear_slot(1)
-	else:
-		clear_slot(0)
-		clear_slot(1)
-		clear_slot(2)
-	var array = [0,1,2]
-	array.erase(dragging_slot)
-	selection_controller.draw_pieces(array)
+	beat_dragging.emit(dragging_slot)
 	update_move_piece()
-	
-	
-
 
 func _on_can_lose_timer_timeout() -> void:
 	for node in $MusicTiles.get_children():
