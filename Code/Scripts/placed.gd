@@ -34,3 +34,8 @@ func get_cell_scene(coords: Vector2i) -> Node:
 	pass
 	return null
 	#return scene_coords.get(coords, null)
+
+
+func _on_music_clock_timeout() -> void:
+	for node: Special in get_children():
+		node.timeout()

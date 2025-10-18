@@ -11,9 +11,9 @@ const HEIGHT = PieceVerifier.HEIGHT
 const TOP_LEFT : Vector2i = PieceVerifier.TOP_LEFT
 const GRID_POS : Vector2i = PieceVerifier.GRID_POS
 const TILE_ID : int = TileDrawer.TILE_ID
+const TILE_SIZE : int = TileDrawer.TILE_WIDTH
 
 # Stores the initial size of an individual tile before scaling has taken place
-var tile_size = 32
 # Stores the size an individual tile after scaling has taken place
 var scaled_tile_size
 
@@ -98,7 +98,7 @@ func check_lines():
 		@warning_ignore("integer_division")
 		particle.global_position = placed_layer.to_global(placed_layer.map_to_local(TOP_LEFT + Vector2i(i, WIDTH/2)))
 		if WIDTH % 2 == 0:
-			particle.global_position.y -= placed_layer.scale.y * tile_size / 2 
+			particle.global_position.y -= placed_layer.scale.y * TILE_SIZE / 2 
 		add_sibling(particle)
 		particle.start()
 		$Camera.shakeTimed(0.2)
@@ -115,7 +115,7 @@ func check_lines():
 		@warning_ignore("integer_division")
 		particle.global_position = placed_layer.to_global(placed_layer.map_to_local(TOP_LEFT + Vector2i(HEIGHT/2, j)))
 		if HEIGHT % 2 == 0:
-			particle.global_position.x -= placed_layer.scale.x * tile_size / 2 
+			particle.global_position.x -= placed_layer.scale.x * TILE_SIZE / 2 
 		
 		particle.rotate_particles(90)
 		add_sibling(particle)
@@ -213,7 +213,7 @@ func create_board():
 		placed_layer.set_cell(Vector2i(0,i) + GRID_POS, TILE_ID, grid_colour)
 		placed_layer.set_cell(Vector2i(WIDTH+1,i) + GRID_POS, TILE_ID, grid_colour)
 	@warning_ignore("integer_division")
-	var edge_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(WIDTH+2,0) + GRID_POS)).x - tile_size / 2
+	var edge_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(WIDTH+2,0) + GRID_POS)).x - TILE_SIZE / 2
 	var screen_edge = get_viewport().content_scale_size.x
 	var _scale = screen_edge / edge_coords
 	placed_layer.scale = Vector2(_scale, _scale)
@@ -221,7 +221,7 @@ func create_board():
 	ghost_layer.scale = Vector2(_scale, _scale)
 	
 	@warning_ignore("integer_division")
-	var bottom_placed_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(0, HEIGHT + 2) + GRID_POS)).y - (tile_size / 2) - 3
+	var bottom_placed_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(0, HEIGHT + 2) + GRID_POS)).y - (TILE_SIZE / 2) - 3
 	#var top_selection_coords = selection_layer.to_global(selection_layer.map_to_local(Vector2i()))
 	#print(bottom_placed_coords)
 	selection_layer.global_position.y = bottom_placed_coords
@@ -245,12 +245,6 @@ func _on_music_clock_timeout() -> void:
 	time_count += 1
 	time_count %= 4
 	
-	for node in $MusicTiles.get_children():
-		if node is Tiles:
-			node.clock_timeout()
-		
-	for node: Special in placed_layer.get_children():
-		node.timeout()
 	#for coord in bomb_coords:
 		#var particle = explode_particle_scene.instantiate()
 		#particle.global_position = placed_layer.to_global(placed_layer.map_to_local(coord))
@@ -268,10 +262,6 @@ func _on_beat_timer_timeout() -> void:
 	beat_dragging.emit(dragging_slot)
 	update_move_piece()
 
-func _on_can_lose_timer_timeout() -> void:
-	for node in $MusicTiles.get_children():
-		if node is Tiles:
-			node.can_lose = true
 
 func game_lose():
 	print("Fuck you, you lose")

@@ -117,8 +117,16 @@ func _ready() -> void:
 		bars[i].get_child(0).text = tiles[i].type_name
 		
 		
-		
-		
+func _on_can_lose_timer_timeout() -> void:
+	for node in get_children():
+		if node is Tiles:
+			node.can_lose = true
+
+func _on_music_clock_timeout() -> void:
+	for node in get_children():
+		if node is Tiles:
+			node.clock_timeout()
+			
 #func _on_music_clock_timeout() -> void:
 	#for i in range(len(tiles)):
 		#if tiles[i].state == Tiles.TileState.IDLE or tiles[i].state == Tiles.TileState.READY:
