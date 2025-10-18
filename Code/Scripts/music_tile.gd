@@ -162,6 +162,7 @@ func start_track():
 func get_length():
 	return $Sound.stream.get_length()
 
+@warning_ignore("unused_parameter")
 func _on_area_2d_area_entered(area: Area2D) -> void:
 	state = TileState.READY
 	resolve_colour()

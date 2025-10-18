@@ -69,7 +69,17 @@ position = Vector2(0, 32)
 scale = Vector2(0.938, 0.938)
 tile_set = ExtResource("2_h2yge")
 
+[node name="Move" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+z_index = 1
+texture_filter = 1
+use_parent_material = true
+position = Vector2(58, 492)
+scale = Vector2(0.938, 0.938)
+tile_set = ExtResource("2_h2yge")
+
 [node name="Camera" type="Camera2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(180, 400)
 script = ExtResource("3_h2yge")
 random_strength = 5.0
@@ -271,15 +281,6 @@ offset_right = -109.0
 offset_bottom = 25.0
 theme = ExtResource("8_ibtm5")
 theme_override_font_sizes/font_size = 13
-
-[node name="Move" type="TileMapLayer" parent="."]
-unique_name_in_owner = true
-z_index = 1
-texture_filter = 1
-use_parent_material = true
-position = Vector2(58, 492)
-scale = Vector2(0.938, 0.938)
-tile_set = ExtResource("2_h2yge")
 
 [node name="MusicClock" type="Timer" parent="."]
 wait_time = 4.0

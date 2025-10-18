@@ -132,7 +132,7 @@ func _ready() -> void:
 			#bars[i].add_theme_stylebox_override("fill", losing_fill)
 			#bars[i].value = tiles[i].get_frac() * 100
 
-
+@warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
 	for i in range(len(tiles)):
 		if tiles[i].state == Tiles.TileState.IDLE or tiles[i].state == Tiles.TileState.READY:

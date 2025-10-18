@@ -2,6 +2,7 @@ extends Node
 
 # Stores the id for the tileset
 const TILE_ID: int = 2
+const TILE_WIDTH : int = 32
 
 # Stores the id for the tileset with the special tiles
 const SPECIAL_ID: int = 3
@@ -38,9 +39,9 @@ func draw_piece_offset(piece: Piece, pos: Vector2i, colour: Vector2i, layer: Til
 
 
 # Clears a rectangular area
-func clear_area(pos: Vector2i, WIDTH, HEIGHT, layer: TileMapLayer):
+func clear_area(pos: Vector2i, width, height, layer: TileMapLayer):
 	var start_pos = pos
-	for i in range(WIDTH):
-		for j in range(HEIGHT):
+	for i in range(width):
+		for j in range(height):
 			pos = start_pos + Vector2i(i,j)
 			layer.erase_cell(pos)

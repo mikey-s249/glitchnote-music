@@ -35,7 +35,6 @@ var score = 0
 
 var particle_scene = preload("res://Code/Scenes/burst_particle.tscn")
 var tile_ray_scene = preload("res://Code/Scenes/tile_ray.tscn")
-var explode_particle_scene = preload("res://Code/Scenes/explode_effect.tscn")
 
 @onready var selection_controller = %Selection as SelectionController
 @onready var selection_layer : TileMapLayer = %Selection
@@ -95,6 +94,8 @@ func check_lines():
 	for i in columns:
 		gen_ray(TileRay.Direction.VERTICAL, Vector2i(i, 0))
 		var particle = particle_scene.instantiate()
+		
+		@warning_ignore("integer_division")
 		particle.global_position = placed_layer.to_global(placed_layer.map_to_local(TOP_LEFT + Vector2i(i, WIDTH/2)))
 		if WIDTH % 2 == 0:
 			particle.global_position.y -= placed_layer.scale.y * tile_size / 2 
@@ -111,6 +112,7 @@ func check_lines():
 		
 		var particle: Node2D = particle_scene.instantiate()
 		
+		@warning_ignore("integer_division")
 		particle.global_position = placed_layer.to_global(placed_layer.map_to_local(TOP_LEFT + Vector2i(HEIGHT/2, j)))
 		if HEIGHT % 2 == 0:
 			particle.global_position.x -= placed_layer.scale.x * tile_size / 2 
@@ -137,7 +139,7 @@ func _ready():
 		node.connect("lose_game", game_lose)
 
 
-
+@warning_ignore("unused_parameter")
 func _process(delta: float):
 	$ScoreLabel.text = "Score: " + str(score)
 	var cell_coords
@@ -210,13 +212,15 @@ func create_board():
 	for i in range(HEIGHT+2):
 		placed_layer.set_cell(Vector2i(0,i) + GRID_POS, TILE_ID, grid_colour)
 		placed_layer.set_cell(Vector2i(WIDTH+1,i) + GRID_POS, TILE_ID, grid_colour)
+	@warning_ignore("integer_division")
 	var edge_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(WIDTH+2,0) + GRID_POS)).x - tile_size / 2
 	var screen_edge = get_viewport().content_scale_size.x
-	var scale = screen_edge / edge_coords
-	placed_layer.scale = Vector2(scale, scale)
-	move_layer.scale = Vector2(scale, scale)
-	ghost_layer.scale = Vector2(scale, scale)
+	var _scale = screen_edge / edge_coords
+	placed_layer.scale = Vector2(_scale, _scale)
+	move_layer.scale = Vector2(_scale, _scale)
+	ghost_layer.scale = Vector2(_scale, _scale)
 	
+	@warning_ignore("integer_division")
 	var bottom_placed_coords = placed_layer.to_global(placed_layer.map_to_local(Vector2i(0, HEIGHT + 2) + GRID_POS)).y - (tile_size / 2) - 3
 	#var top_selection_coords = selection_layer.to_global(selection_layer.map_to_local(Vector2i()))
 	#print(bottom_placed_coords)
@@ -258,27 +262,6 @@ func _on_music_clock_timeout() -> void:
 				#if 2 <= i and i <= 9 and 2 <= j and j <= 9:
 					#placed_layer.erase_cell(Vector2i(i,j))
 	#bomb_coords.clear()
-
-
-
-func bomb_expl(coords: Vector2i):
-	var particle = explode_particle_scene.instantiate()
-	particle.global_position = placed_layer.to_global(placed_layer.map_to_local(coords))
-	add_sibling(particle)
-	particle.restart()
-	$Camera.shakeTimed(0.2)
-	for i in range(coords.x-1, coords.x+2):
-		for j in range(coords.y-1, coords.y+2):
-			if TOP_LEFT.x <= i and i <= TOP_LEFT.x + WIDTH - 1 and TOP_LEFT.y <= j and j <= TOP_LEFT.y + HEIGHT - 1:
-				placed_layer.erase_cell(Vector2i(i,j))
-
-func line_expl(coords: Vector2i, vertical: bool):
-	if vertical:
-		for i in range(TOP_LEFT.y, TOP_LEFT.y + HEIGHT):
-			placed_layer.erase_cell(Vector2i(coords.x, i))
-	else:
-		for i in range(TOP_LEFT.x, TOP_LEFT.x + WIDTH):
-			placed_layer.erase_cell(Vector2i(i, coords.y))
 
 
 func _on_beat_timer_timeout() -> void:
