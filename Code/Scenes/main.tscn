@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=4 uid="uid://cae8yu3awbmbg"]
+[gd_scene load_steps=15 format=4 uid="uid://cae8yu3awbmbg"]
 
 [ext_resource type="Script" uid="uid://b7vuadrdyxlsm" path="res://Code/Scripts/main.gd" id="2_0xm2m"]
 [ext_resource type="TileSet" uid="uid://cxeo3tlu67esw" path="res://new.tres" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://clnd6o2athawa" path="res://Code/Scenes/block_selection_area.tscn" id="3_00ibb"]
 [ext_resource type="Script" uid="uid://kf7orslwuxvn" path="res://Code/Scripts/camera.gd" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://dh4egidaetixk" path="res://Code/Scripts/placed.gd" id="3_lnakw"]
+[ext_resource type="Script" uid="uid://dudpf4oxc7gpl" path="res://Code/Scenes/selection.gd" id="3_tpd2r"]
 [ext_resource type="PackedScene" uid="uid://bmoetnow0tott" path="res://Code/Scenes/particle.tscn" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bpfmyw70uyw1t" path="res://Code/Scenes/music_tile.tscn" id="5_5vw27"]
 [ext_resource type="Script" uid="uid://2dekps56pd4c" path="res://Code/Scripts/music_tiles.gd" id="5_efxa6"]
@@ -34,10 +35,12 @@ default_font = ExtResource("12_dw7sb")
 script = ExtResource("2_0xm2m")
 
 [node name="Selection" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
 texture_repeat = 2
 position = Vector2(0, 363)
 scale = Vector2(0.703, 0.703)
 tile_set = ExtResource("2_h2yge")
+script = ExtResource("3_tpd2r")
 
 [node name="BlockSelection1" parent="Selection" instance=ExtResource("3_00ibb")]
 position = Vector2(93.8834, 109.531)
@@ -51,6 +54,7 @@ position = Vector2(418.208, 108.108)
 block_id = 2
 
 [node name="Placed" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
 texture_filter = 1
 use_parent_material = true
 position = Vector2(5.96046e-08, 32)
@@ -301,12 +305,15 @@ wait_time = 32.0
 one_shot = true
 autostart = true
 
-[connection signal="block_selected" from="Selection/BlockSelection1" to="." method="_on_block_selected"]
-[connection signal="block_selected" from="Selection/BlockSelection2" to="." method="_on_block_selected"]
-[connection signal="block_selected" from="Selection/BlockSelection3" to="." method="_on_block_selected"]
+[connection signal="block_selected" from="Selection" to="." method="_on_block_selected"]
+[connection signal="draw_piece_offset" from="Selection" to="." method="draw_piece_offset"]
+[connection signal="block_selected" from="Selection/BlockSelection1" to="Selection" method="_on_block_selection"]
+[connection signal="block_selected" from="Selection/BlockSelection2" to="Selection" method="_on_block_selection"]
+[connection signal="block_selected" from="Selection/BlockSelection3" to="Selection" method="_on_block_selection"]
 [connection signal="timeout" from="Camera/Timer" to="Camera" method="_on_timer_timeout"]
 [connection signal="timeout" from="MusicClock" to="." method="_on_music_clock_timeout"]
 [connection signal="timeout" from="MusicClock" to="MusicTiles" method="_on_music_clock_timeout"]
 [connection signal="timeout" from="BeatTimer" to="." method="_on_beat_timer_timeout"]
+[connection signal="timeout" from="BeatTimer" to="Selection" method="_on_beat_timer_timeout"]
 [connection signal="pressed" from="PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="timeout" from="CanLoseTimer" to="." method="_on_can_lose_timer_timeout"]
