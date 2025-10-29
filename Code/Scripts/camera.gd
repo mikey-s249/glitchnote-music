@@ -2,6 +2,7 @@ extends Camera2D
 
 @export var random_strength: float = 30.0
 @export var fade: float = 5.0
+@export var bomb_shake_length : float = 0.2
 
 var rng = RandomNumberGenerator.new()
 
@@ -24,7 +25,7 @@ func _process(delta: float) -> void:
 func randomOffset() -> Vector2:
 	return Vector2(rng.randf_range(-shake_strength, shake_strength), rng.randf_range(-shake_strength, shake_strength))
 
-func shakeTimed(time):
+func shakeTimed(time : float):
 	$Timer.start(time)
 	shaking = true
 

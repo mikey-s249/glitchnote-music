@@ -5,25 +5,37 @@ extends TileMapLayer
 class_name PlacedScenes
 
 var scene_coords: Dictionary[Vector2i, Node] = {}
+@onready var camera : Camera2D = %Camera
 
 func _enter_tree():
 	child_entered_tree.connect(_register_child)
-	child_exiting_tree.connect(_unregister_child)
+	#child_exiting_tree.connect(_unregister_child)
 
 func _register_child(child: Special):
 	await child.ready
 	var coords = local_to_map(to_local(child.global_position))
-	scene_coords[coords] = child
-	child.coords = coords
+	#scene_coords[coords] = child
+	child.set_coords(coords)
 	#child.set_meta("tile_coords", coords)
+	
 	if child.special == Piece.SpecialTiles.BOMB:
-		child.connect("explode", get_parent().bomb_expl)
+		child.connect("camera_shake", camera.shakeTimed)
 	if child.special == Piece.SpecialTiles.LINE:
-		child.connect("line", get_parent().line_expl)
+		pass
+		#child.connect("line", get_parent().line_expl)
 
-func _unregister_child(child):
-	#scene_coords.erase(child.get_meta("tile_coords"))
-	scene_coords.erase(child.coords)
+#func _unregister_child(child):
+	##scene_coords.erase(child.get_meta("tile_coords"))
+	#scene_coords.erase(child.coords)
 
+@warning_ignore("unused_parameter")
 func get_cell_scene(coords: Vector2i) -> Node:
-	return scene_coords.get(coords, null)
+	assert(false, "This function should be deprecated")
+	pass
+	return null
+	#return scene_coords.get(coords, null)
+
+
+func _on_music_clock_timeout() -> void:
+	for node: Special in get_children():
+		node.timeout()
